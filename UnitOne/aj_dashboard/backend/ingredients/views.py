@@ -14,6 +14,8 @@ def Ingredients2(request):
 class Ingredients(viewsets.ModelViewSet):
     queryset= Ingredients.objects.all()
     serializer_class=IngredientsSerilizer
+    pagination_class = None  # Disable pagination
+
 
 class Ingredient_Node(viewsets.ModelViewSet):
     queryset= IngredientNode.objects.all()

@@ -1,141 +1,143 @@
-.protocols-items{
+.protocols-items {
   border: 1px solid rgba(58, 53, 65, 0.23);
   border-bottom: unset;
   border-top: unset;
   height: auto;
 }
-.justify-center{
+.justify-center {
   justify-content: center;
 }
-.deleteingicon{
-  
+.deleteingicon {
   color: #ee1414;
   font-size: 18px;
- }
+}
 
- .design-arrow-ingredient{
-  background-color: #F2F3F3;
-  visibility:hidden ;
-  color: #92979D;
-  margin: 8px 0px ;
-  padding: 5px 0px ;
- }
- .ing-row * {
-  margin: 0px !important;
- }
- .ing-row  {
+.design-arrow-ingredient {
+  background-color: #ffffff;
+  visibility: hidden;
+  color: #92979d;
+  // margin: 8px 10px;
+  // padding: 17px 0px;
+  position: relative;
+  top: 11px;
+  height: 0px !important;
+  cursor: pointer;
+}
+.ing-row * {
+  margin: -1px 0px !important;
+}
+.ing-row {
   margin: 5px 0px !important;
- }
- 
- .ing-row:hover  .design-arrow-ingredient {
-  visibility:visible ;
- }
+  padding: 10px;
+}
 
- .ing_controll{
-  border: 1px solid #C2C9D1;
-  border-radius: 5px ;
- }
+.ing-row:hover .design-arrow-ingredient {
+  visibility: visible;
+  border-radius: 3px;
+}
 
- 
-.node-item{
+.ing_controll {
+  border: 1px solid #c2c9d1;
+  border-radius: 5px;
+}
+
+.node-item {
   border: 0.558981px solid rgba(58, 53, 65, 0.23);
   border-radius: 4px;
-  &-header
-  {
+  &-header {
     height: 42px;
     font-size: 7.82574px;
-    color: #FFFFFF;
+    color: #ffffff;
 
-    .icon{
-      color: #FFFFFF;
+    .icon {
+      color: #ffffff;
       font-size: 7.82574px;
       top: 2px !important;
-      position: absolute  !important;
-      right: 7px  !important;
+      position: absolute !important;
+      right: 7px !important;
     }
-     &.ingredient{
-      background: #F99417;
+    &.ingredient {
+      background: #f99417;
     }
-    &.merge{
-      background:#F85A4C;
+    &.merge {
+      background: #f85a4c;
     }
-    &.serve{
-      background: #38C253
+    &.serve {
+      background: #38c253;
     }
-    &.process{
-      background: #4285F4
-
+    &.process {
+      background: #4285f4;
     }
   }
 
-  &-actions{
-      justify-content: center;
-    button{
+  &-actions {
+    justify-content: center;
+    button {
       position: absolute;
       bottom: -18px;
     }
   }
 }
-.handle-circle{
-background-color: transparent;
+.handle-circle {
+  background-color: transparent;
   /* border: 2px solid #0F9D58; */
   height: 20px;
   width: 24px;
-  right: 20px;
+  right: 19px;
   top: unset;
   display: flex;
   justify-content: center;
   vertical-align: middle;
   align-items: center;
-  &.target{
-    right:unset;
+  &.target {
+    right: unset;
     left: 20px;
   }
 
-  &-nested{
-    background-color: #0F9D58;
+  &-nested {
+    background-color: #0f9d58;
     height: 8px;
     width: 8px;
     position: absolute;
     top: 2px;
     border-radius: 50%;
     left: 2px;
-
   }
 }
 
-.handle-container{
+.handle-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  right: 10px;
-  padding-top: 19px;
+  position: relative;
+  left: 19px;
+  top: 8px;
+
 }
 
-.handle-container-nopdding{
+.handle-container-nopdding {
   padding-top: -1px;
   position: relative;
   padding: 0;
-  /* bottom: 43px; */
   top: -2px;
   left: 2px;
- 
 }
 
 .number-input {
-  & input[type=number]::-webkit-inner-spin-button,
-  & input[type=number]::-webkit-outer-spin-button {
+  top: 6px;
+  & input[type="number"]::-webkit-inner-spin-button,
+  & input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
 
-  & input[type=number] {
+  & input[type="number"] {
     -moz-appearance: textfield;
   }
 }
 
-.upload_protocol_button{
+.upload_protocol_button {
   font-weight: 600;
   font-size: 14px;
   color: rgba(58, 53, 65, 0.6);

@@ -63,5 +63,9 @@ interface IngredientType {
 
     [key: string]: string
 }
-
+interface ingredientList {
+  name: string;
+  synonyms: string;
+  ingredient_type: string;
+}
 type ListType<T> = Merge<{ results: Array<T> }, PaginationType>
