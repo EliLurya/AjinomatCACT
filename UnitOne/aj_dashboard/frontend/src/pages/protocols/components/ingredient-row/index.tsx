@@ -49,12 +49,17 @@ const IngredientRow: React.FC<any> = ({
    * @author Amr
    */
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    set(event.target.name)("" + event.target.value);
+    // Convert input value to a number
+    const inputValue = +event.target.value;
+    // Set the value to 1 if the value is less than 1
+    const newValue = inputValue < 1 ? "1" : inputValue.toString();
+    // Update the state and call onChange with the new value
+    set(event.target.name)(newValue);
     onChange(index, {
       name,
       amount,
       unit,
-      [event.target.name]: event.target.value,
+      [event.target.name]: newValue,
     });
   };
 
@@ -68,6 +73,10 @@ const IngredientRow: React.FC<any> = ({
   };
 
   const handelDecresing = (ingName: string) => {
+    if (amount <= 1) {
+      setAmount(1);
+      return;
+    }
     let newAmount = Number(amount) - 1;
     onChange(index, { name, amount: newAmount, unit, [ingName]: newAmount });
     setAmount(newAmount);
