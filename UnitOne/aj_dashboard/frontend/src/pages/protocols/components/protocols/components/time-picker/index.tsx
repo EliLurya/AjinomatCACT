@@ -23,17 +23,36 @@ const ProtocolTimePicker: React.FC<any> = ({
    * @param event
    * @author Amr
    */
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setValues(event.target.value);
+const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const inputValue = event.target.value;
+
+  // Remove all characters that are not numbers or a single "."
+  const sanitizedValue = inputValue.replace(/[^0-9.]/g, "");
+
+  // Create a regular expression to check for multiple decimal points
+  const hasMultipleDecimalPoints = /[.].*[.]/.test(sanitizedValue);
+  const isValid =
+    !sanitizedValue.includes("-") && !sanitizedValue.includes("=");
+
+  // If the input value is valid and doesn't have multiple decimal points, update the input field's value
+  if (isValid && !hasMultipleDecimalPoints) {
+    setLocalValue(sanitizedValue);
+    onChange(sanitizedValue);
+  } else {
+    // If the input is not valid or has multiple decimal points, reset the input field's value
+    setLocalValue(localValue); 
+  }
+};
+
+
+
+
   /**
    * update local values and the node's value as well
    * @param _value
    * @author Amr
    */
-  const setValues = (_value: string) => {
-    setLocalValue(_value);
-    onChange(_value);
-  };
+ 
 
   console.log("extra", extra);
 
@@ -44,10 +63,15 @@ const ProtocolTimePicker: React.FC<any> = ({
       </InputLabel>
       <OutlinedInput
         className={"number-input"}
-        type="number"
-        // label="Number"
+        type="text"
         value={localValue}
         onChange={handleChange}
+        onKeyPress={(event) => {
+          const charCode = event.which ? event.which : event.keyCode;
+          if (charCode !== 46 && (charCode < 48 || charCode > 57)) {
+            event.preventDefault(); // Prevent input of non-numeric characters
+          }
+        }}
         name="time"
         id="outlined-adornment-weight"
         endAdornment={
@@ -58,6 +82,7 @@ const ProtocolTimePicker: React.FC<any> = ({
         aria-describedby="outlined-weight-helper-text"
         inputProps={{
           "aria-label": "weight",
+          autocomplete: "off",
         }}
       />
     </FormControl>
