@@ -48,20 +48,39 @@ const IngredientRow: React.FC<any> = ({
    * @param event
    * @author Amr
    */
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Convert input value to a number
-    const inputValue = +event.target.value;
-    // Set the value to 1 if the value is less than 1
-    const newValue = inputValue < 1 ? "1" : inputValue.toString();
-    // Update the state and call onChange with the new value
-    set(event.target.name)(newValue);
-    onChange(index, {
-      name,
-      amount,
-      unit,
-      [event.target.name]: newValue,
-    });
-  };
+const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const inputValue = event.target.value;
+  if(inputValue[0] === '.')return
+  // Remove any non-numeric characters except a single decimal point
+  const sanitizedValue = inputValue.replace(/[^0-9.]/g, "");
+  // Ensure that there's only one decimal point in the input
+  const validValue = sanitizedValue.replace(/\.(?=.*\.)/g, "");
+  set(event.target.name)(validValue);
+  onChange(index, {
+    name,
+    amount,
+    unit,
+    [event.target.name]: validValue,
+  });
+};
+
+
+const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const charCode = event.which || event.keyCode;
+  const currentValue = event.currentTarget.value;
+  const hasDecimalPoint = currentValue?.includes(".");
+  if (
+    (charCode >= 48 && charCode <= 57) || // Numbers 0-9
+    charCode === 8 // Backspace
+  ) {
+    return;
+  }
+  // Allow a decimal point only if not already present and prevent any other key presses
+  if (charCode === 46 && !hasDecimalPoint) {
+    return;
+  }
+  event.preventDefault();
+};
 
   const isValidConnection = (connection: any) => true;
 
@@ -126,7 +145,7 @@ const IngredientRow: React.FC<any> = ({
                   sx={{
                     "& fieldset": { border: "none" },
                     width: "130%",
-                    textAlign:"start"
+                    textAlign: "start",
                   }}
                 />
               )}
@@ -137,9 +156,9 @@ const IngredientRow: React.FC<any> = ({
           <FormControl sx={{ m: 1 }} variant="outlined" size="small">
             <OutlinedInput
               className={"number-input"}
-              type="number"
+              type="text"
               value={amount}
-              onInput={handleChange}
+              onChange={handleChange}
               name="amount"
               id="outlined-adornment-weight"
               endAdornment={
@@ -149,6 +168,7 @@ const IngredientRow: React.FC<any> = ({
               inputProps={{
                 "aria-label": "weight",
               }}
+              onKeyPress={handleKeyPress}
               sx={{
                 "& fieldset": { border: "none" },
               }}
