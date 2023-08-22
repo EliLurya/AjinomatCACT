@@ -41,16 +41,10 @@ const Merge: React.FC<any> = ({ data, isConnectable, id }) => {
   useEffect(() => {
     console.log("data", data);
   }, [data]);
-  const [note, setNote] = useState<boolean>(false);
-  const handleMouseEnter = (event: React.MouseEvent, id: any) => {
-    setNote(!note);
-  };
   return (
     <div>
       <Card sx={{ maxWidth: 345, width: 250 }} className="node-item ">
         <CardHeader
-          onMouseEnter={(e) => handleMouseEnter(e, id)}
-          onMouseLeave={(e) => handleMouseEnter(e, id)}
           className="node-item-header merge"
           title={<Typography variant="h6">Merge</Typography>}
           action={
@@ -63,13 +57,6 @@ const Merge: React.FC<any> = ({ data, isConnectable, id }) => {
             </IconButton>
           }
         />
-        {note && (
-          <Card sx={{ width: 250 }}>
-            <CardHeader
-              title={<Typography variant="h6">{id}</Typography>}
-            ></CardHeader>
-          </Card>
-        )}
         <CardContent>
           <Grid container spacing={1} alignItems={"center"}>
             {(data.children || []).map((input: any, index: number) => (
