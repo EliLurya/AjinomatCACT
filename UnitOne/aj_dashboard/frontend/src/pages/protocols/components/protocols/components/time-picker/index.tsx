@@ -25,7 +25,7 @@ const ProtocolTimePicker: React.FC<any> = ({
    */
 const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   const inputValue = event.target.value;
-
+  if(inputValue[0] === '.')return
   // Remove all characters that are not numbers or a single "."
   const sanitizedValue = inputValue.replace(/[^0-9.]/g, "");
 
