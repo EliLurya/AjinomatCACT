@@ -90,9 +90,9 @@ const handleAutocompleteClick = (nestedNode: any) => {
               </ListItemButton>
             </ListItem>
           ) : (
-            <ListItem disablePadding>
+            <ListItem disablePadding style={{ marginLeft: "15px" }}>
               <Autocomplete
-                style={{ width: "74%", marginLeft: "6%" }}
+                style={{ width:"66%" , marginRight:"65px"}}
                 options={processOptions?.children || []}
                 getOptionLabel={(option) => option.label}
                 value={selectedProcess}
