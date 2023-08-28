@@ -1,116 +1,141 @@
 import List from "@mui/material/List";
-import { Collapse, Divider, ListItem } from "@mui/material";
+import { Autocomplete, Divider, ListItem, TextField } from "@mui/material";
 import options from "../../protocols/partials/options";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import React, { useState, useEffect } from "react";
-import { http, useHttp } from "../../../../../plugins/axios";
-import { addParamsToEndpoint, getEndpoint } from "../../../../../common/http";
+import { http } from "../../../../../plugins/axios";
+import { getEndpoint } from "../../../../../common/http";
 
 const AddTab: React.FC<any> = ({ addProtocol }) => {
-    const [open, setOpen] = useState<boolean>(false)
-    const [optionsList, setOptionsList] = useState<any>([])
-    const [prtocessList, setPrtocessList] = useState<any>([])
-    const [prtocessOptionsList, setPrtocessOptionsList] = useState<any>([])
+  //List of options to be displayed
+  const [optionsList, setOptionsList] = useState<any>([]);
+  const [prtocessList, setPrtocessList] = useState<any>([]);
+  const [prtocessOptionsList, setPrtocessOptionsList] = useState<any>([]);
+  const processOptions = options.find((opt) => opt.label === "Process");
+  // Handle selection of a process option
+  const [selectedProcess, setSelectedProcess] = useState<any | null>(null);
 
-    const handleClick = () => {
-        setOpen(!open);
-    };
-
-    useEffect(() => {
-        http<any>(getEndpoint('cooking_process'), {}).then(response => {
-            setPrtocessList([...response.data.payload])
-        })
-    }, [])
-    useEffect(() => {
-        setPrtocessOptionsList(prtocessList.map((process: any) => {
-            if (process?.parameters?.length) {
-                return {
-                    label: process?.name,
-                    protocol: 'process',
-                    inputs: process?.parameters?.map((parameter: any) => {
-                        if (parameter.name != "target_state") {
-                            return {
-                                type: 'TimePicker',
-                                props: {
-                                    name: parameter?.name,
-                                    unit: parameter?.unit,
-                                    format: 'hh:mm',
-                                    style: {
-                                        height: '45px'
-                                    }
-
-                                }
-                            }
-                        }
-                    }).filter((notUndefined: any) => notUndefined !== undefined)
-                }
-            }
-        }).filter((notUndefined: any) => notUndefined !== undefined))
-    }, [prtocessList])
-
-    useEffect(() => {
-        setOptionsList(options.map((op) => op.label == "Process" ? { ...op, ["children"]: prtocessOptionsList } : op))
-    }, [prtocessOptionsList])
-
-    useEffect(() => {
-        console.log("optionsList", optionsList)
-    }, [optionsList])
-
-
-    return (
-        <List>
-            <ListItem className="justify-center">Add Protocol</ListItem>
-            <Divider />
-            {optionsList.map((node: any, index: number) => (
-                node?.children ?
-                    <>
-                        <ListItem key={'protocol-list-items-' + index} disablePadding>
-
-                            <ListItemButton onClick={handleClick}>
-
-                                <ListItemText primary={node.label} />
-                                <ListItemIcon>
-                                    {open ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemIcon>
-                            </ListItemButton>
-                        </ListItem>
-                        <Divider key={'divider-protocol-list-items-nested' + index} />
-                        <Collapse in={open} timeout="auto" unmountOnExit key={'Collapse-items-nested' + index}>
-                            <List component="div" style={{ paddingLeft: '25px' }}>
-                                {node?.children?.map((nestedNode: any, index: number) => (
-                                    <ListItemButton onClick={() => addProtocol(nestedNode)} key={`${node.label}-${nestedNode.label}-${index}`} >
-                                        <ListItemText primary={nestedNode.label} />
-                                        <ListItemIcon>
-                                            <AddCircleIcon />
-                                        </ListItemIcon>
-                                    </ListItemButton>
-                                ))}
-
-                            </List>
-                        </Collapse>
-                    </>
-
-                    :
-                    <>
-                        <ListItem key={'protocol-list-items-' + index} disablePadding>
-
-                            <ListItemButton onClick={() => addProtocol(node)}>
-                                <ListItemText primary={node.label} />
-                                <ListItemIcon>
-                                    <AddCircleIcon />
-                                </ListItemIcon>
-                            </ListItemButton>
-                        </ListItem>
-                        <Divider key={'divider-protocol-list-items-' + index} />
-                    </>
-
-            ))}
-        </List>
+  // Fetch list of process options
+  useEffect(() => {
+    http<any>(getEndpoint("cooking_process"), {}).then((response) => {
+      setPrtocessList([...response.data.payload]);
+    });
+  }, []);
+  // Build the list of process options based on fetched data
+  useEffect(() => {
+    setPrtocessOptionsList(
+      prtocessList
+        //Map's parameter of process
+        .map((process: any) => {
+          if (process?.parameters?.length) {
+            return {
+              label: process?.name,
+              protocol: "process",
+              inputs: process?.parameters
+              //Map's input
+                ?.map((parameter: any) => {
+                  if (parameter.name !== "target_state") {
+                    return {
+                      type: "TimePicker",
+                      props: {
+                        name: parameter?.name,
+                        unit: parameter?.unit,
+                        format: "hh:mm",
+                        style: {
+                          height: "45px",
+                        },
+                      },
+                    };
+                  }
+                }) // Remove undefined entries
+                .filter((notUndefined: any) => notUndefined !== undefined),
+            };
+          }
+        }) // Remove undefined entries
+        .filter((notUndefined: any) => notUndefined !== undefined)
     );
-}
+  }, [prtocessList]);
+  //handle autocomplete click
+  const handleAutocompleteClick = (nestedNode: any) => {
+    addProtocol(nestedNode);
+    setSelectedProcess(null);
+  };
+  // Update the list of options based on process options
+  useEffect(() => {
+    setOptionsList(
+      options.map((op) =>
+        op.label === "Process"
+          ? { ...op, ["children"]: prtocessOptionsList }
+          : op
+      )
+    );
+  }, [prtocessOptionsList]);
+
+  return (
+    <List>
+      {/* Header */}
+      <ListItem className="justify-center">Add Protocol</ListItem>
+      <Divider />
+      {/* Map's options and render each */}
+      {options.map((node, index) => (
+        <React.Fragment key={`protocol-list-item-${index}`}>
+          {/* If isn't "process", does not use with autocomplete */}
+          {node.label !== "Process" ? (
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => addProtocol(node)}>
+                <ListItemText primary={node.label} />
+                <ListItemIcon>
+                  <AddCircleIcon />
+                </ListItemIcon>
+              </ListItemButton>
+            </ListItem>
+          ) : (
+            //Autocomplete
+            <ListItem disablePadding style={{ marginLeft: "18px" }}>
+              <Autocomplete
+                style={{ width: "75%", marginRight: "4.1rem" }}
+                options={processOptions?.children || []}
+                getOptionLabel={(option) => option.label}
+                value={selectedProcess}
+                onChange={(_, newValue) => {
+                  if (newValue) {
+                    handleAutocompleteClick(newValue);
+                  }
+                }}
+                // Filter options based on input value (startsWith)
+                filterOptions={(options, { inputValue }) =>
+                  options.filter((option) =>
+                    option.label
+                      .toLowerCase()
+                      .startsWith(inputValue.toLowerCase())
+                  )
+                }
+                // Render an input field for Autocomplete
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Process"
+                    label="Process"
+                    variant="standard"
+                    size="small"
+                    InputProps={{
+                      ...params.InputProps,
+                      disableUnderline: true,                      
+                    }}
+                    // Display the selected process label as the input value
+                    value={selectedProcess ? selectedProcess.label : ""}
+                  />
+                )}
+              />
+            </ListItem>
+          )}
+        </React.Fragment>
+      ))}
+    </List>
+  );
+};
 
 export default AddTab;

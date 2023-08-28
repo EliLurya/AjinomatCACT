@@ -62,7 +62,7 @@ interface IngredientType {
     unit: string,
 
     [key: string]: string
-}
+}//inteface of ingredient
 interface ingredientList {
   name: string;
   synonyms: string;

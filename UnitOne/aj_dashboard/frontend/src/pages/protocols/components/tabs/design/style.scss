@@ -1,42 +1,68 @@
-.design-taste-items{
-  border: 1px solid #A7C4F0;
+.design-taste-items {
+  border: 1px solid #a7c4f0;
   padding: 0px;
-  height: 33px;
+  height: 31px;
   border-radius: 5px;
+  //These lines (3) are intended to prevent escape of the text in the case of large text
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.design-taste-bg{
- height: 100%;
- min-width: 0px;
-}
-
-.design-arrow{
- background-color: #F2F3F3;
- visibility:hidden ;
- color: #92979D;
-}
-.design-taste-new-value{
- padding: 3px;
- text-align: right;
-}
-.design-taste-name{
- padding: 3px 0px;
- 
+.design-taste-bg {
+  height: 100%;
+  min-width: 0px;
 }
 
-.justify-center{
- justify-content: center;
+.design-arrow {
+  background-color: #f2f3f3;
+  visibility: hidden;
+  color: #92979d;
+  cursor: pointer;
+}
+.design-taste-new-value {
+  padding: 3px;
+  text-align: right;
+}
+.design-taste-name {
+  padding: 3px 0px;
 }
 
-.design-taste-items:hover  .design-arrow {
- visibility:visible ;
+.justify-center {
+  justify-content: center;
 }
 
-.design-new-title{
- text-align: right;
- color: #FFA629;
-}
-.design-org-title{
- text-align: center;
- color: #4285F4;
+.design-taste-items:hover .design-arrow {
+  visibility: visible;
 }
 
+.design-new-title {
+  text-align: right;
+  color: #ffa629;
+}
+.design-org-title {
+  text-align: center;
+  color: #4285f4;
+}
+.design-arrow-container-right {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  border-radius: 0px 4px 4px 0px;
+}
+.design-arrow-container-left {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  border-radius: 4px 0px 0px 4px;
+}
+.design-arrow-left .design-arrow-right {
+  position: relative;
+}
+
+.design-arrow-right {
+  margin-left: 3px;
+}

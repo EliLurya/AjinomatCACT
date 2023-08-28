@@ -32,6 +32,8 @@ const colors = [
 const Report: React.FC = () => {
 
     const { 
+        setProject,
+        projects,
         project, 
         selectedProtocols,
         duration, 
@@ -63,37 +65,38 @@ const Report: React.FC = () => {
     ]);
 
     return (
-        <Box>
-            {!!project ? (
-                <>
-                    <ReportStatistics 
-                        selectedProject={project} 
-                        selectedProtocols={selectedProtocols} 
-                        duration={duration} 
-                        panelists={panelists} 
-                        colors={colors} 
-                        />
-                    <ReportCharts 
-                        chartData={chartData} 
-                        keys={selectedProtocols} 
-                        emouthData={emouthData} 
-                        recipeData={recipeData}
-                        textureData={textureData}
-                        textureScale={textureScale}
-                        colors={colors} 
-                        />
-                        {/* <ReportSensors/> */}
-                    <ProductProcess 
-                        processData={processData} 
-                        nutritionData={nutritionData}
-                        />
-                </>
-            ) : (
-                <p>Loading...</p>
-            )}
-            
-        </Box>
-    )
+      <Box>
+        {project && projects ? (
+          <>
+            <ReportStatistics
+              setProject={setProject}
+              projects={projects}
+              selectedProject={project}
+              selectedProtocols={selectedProtocols}
+              duration={duration}
+              panelists={panelists}
+              colors={colors}
+            />
+            <ReportCharts
+              chartData={chartData}
+              keys={selectedProtocols}
+              emouthData={emouthData}
+              recipeData={recipeData}
+              textureData={textureData}
+              textureScale={textureScale}
+              colors={colors}
+            />
+            {/* <ReportSensors/> */}
+            <ProductProcess
+              processData={processData}
+              nutritionData={nutritionData}
+            />
+          </>
+        ) : (
+          <p>No project to display</p>
+        )}
+      </Box>
+    );
 }
 
 export default Report;

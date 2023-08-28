@@ -60,6 +60,8 @@ const useFlowActions = (
    * @author Amr
    */
   const onConnect = useCallback((connection: any) => {
+    console.log("connection " + typeof connection);
+
     setEdges((eds) => addEdge(connection, eds));
   }, []);
 
@@ -120,14 +122,25 @@ const useCommon = (
    */
   const onClose = (id: string) => {
     setNodes((nodes: Array<Node>) =>
-      nodes.filter((node: Node) => node.id != id)
+      nodes?.filter((node: Node) => node.id != id)
     );
     setEdges((edges: Array<Edge>) =>
-      edges.filter((edge: Edge) => edge.source != id || edge.target != id)
+      edges?.filter((edge: Edge) => edge.source != id || edge.target != id)
     );
   };
 
   return { onChildChange, random, onClose };
+};
+
+// This function takes an array of nodes and a new node object, then returns a new array
+// with the new node added to it. If the input nodes array is undefined, it initializes
+// an empty array and adds the new node to it. The function ensures immutability by creating
+// a copy of the nodes array before adding the new node.
+const addNodeToNodes = (nodes: Array<Node> | undefined, newNode: Node) => {
+  // Create a copy of the nodes array or initialize an empty array
+  const updatedNodes = Array.isArray(nodes) ? [...nodes] : [];
+  updatedNodes.push(newNode);
+  return updatedNodes;
 };
 
 /**
@@ -208,23 +221,27 @@ const useIngredient = function (
   };
 
   const addIngredientProtocol = (process: any = {}) => {
-    const id = "ingredient-" + (nodes?.length + 1);
-    setNodes((nodes: Array<Node>) => [
-      ...nodes,
-      {
-        id: id,
-        type: "ingredient-container",
-        position: { x: location.getX(), y: location.getY() },
-        draggable: true,
-        height: 100,
-        data: {
-          value: 123,
-          ...ingredientActions,
-          children: [],
-          ...process,
-        },
+    //Id for ingredient also if nodes undefined
+    const id =
+      nodes === undefined
+        ? "ingredient-1"
+        : "ingredient-" + (nodes?.length + 1);
+
+    // Create a new node object
+    const newNode = {
+      id: id,
+      type: "ingredient-container",
+      position: { x: location.getX(), y: location.getY() },
+      draggable: true,
+      height: 100,
+      data: {
+        ...ingredientActions,
+        children: [],
+        ...process,
       },
-    ]);
+    };
+    // Update the nodes array by adding the new merge node using the addNodeToNodes function
+    setNodes((nodes: Node[] | undefined) => addNodeToNodes(nodes, newNode));
     location.updateLocation();
   };
 
@@ -247,19 +264,20 @@ const useMerge = (
   onClose: any,
   location: any
 ) => {
+  //add a child to a merge node
   const addMergeChild = useCallback(
     (parentId: string) => {
       setNodes((nodes: Array<Node>) => {
         const parentIndex = nodes.findIndex(
           (node: Node) => node.id === parentId
         );
-        const updatedNodes = [...nodes];
-
+        const updatedNodes: Node[] = [...nodes];
+        // Create a unique ID for the new child node
         const nextId =
           parentId +
           "-" +
           (updatedNodes[parentIndex]?.data?.children?.length + 1);
-
+        // Create the new child node object
         const newChild = {
           id: nextId,
           type: "TimePicker",
@@ -270,7 +288,7 @@ const useMerge = (
             value: null,
           },
         };
-
+        // Add to the parent node's new child
         updatedNodes[parentIndex].data = {
           ...updatedNodes[parentIndex].data,
           children: [
@@ -278,42 +296,41 @@ const useMerge = (
             newChild,
           ],
         };
-
         return updatedNodes;
       });
     },
     [setNodes]
   );
-
+  // Merge actions object with functions
   const mergeActions = {
     addAction: addMergeChild,
     onChange: onChildChange,
     onClose,
   };
-
+  // Add a merge node
   const addMerge = (merge: any = {}) => {
-    const id = "merge-" + (nodes?.length + 1);
-    setNodes((nodes: Array<Node>) => [
-      ...nodes,
-      {
-        id: id,
-        type: "merge",
-        position: { x: 120, y: 490 },
-        draggable: true,
-        height: 100,
-        data: {
-          ...mergeActions,
-          children: merge.children ?? [],
-          ...merge,
-        },
+    // Create a new node object
+    const newNode = {
+      //Id for merge also if nodes undefined
+      id: nodes === undefined ? "merge-1" : "merge-" + (nodes?.length + 1),
+      type: "merge",
+      position: { x: location.getX(), y: location.getY() },
+      draggable: true,
+      height: 100,
+      data: {
+        ...mergeActions,
+        children: merge.children ?? [],
+        ...merge,
+        onclose,
       },
-    ]);
+    };
+    // Update the nodes array by adding the new merge node using the addNodeToNodes function
+    setNodes((nodes: Node[] | undefined) => addNodeToNodes(nodes, newNode));
     location.updateLocation();
   };
-
   return { addMerge, addMergeChild, mergeActions };
 };
-
+//this hook handles all serve component's operations
 const useServe = (
   setNodes: (nodes: any) => any,
   random: any,
@@ -323,22 +340,22 @@ const useServe = (
   const serveActions = {
     onClose,
   };
+  //Add a "serve" node
   const addServe = (process: any = {}) => {
-    const id = "serve-" + random(100);
-    setNodes((nodes: Array<Node>) => [
-      ...nodes,
-      {
-        id: id,
-        type: "serve",
-        position: { x: location.getX(), y: location.getY() },
-        draggable: true,
-        height: 100,
-        data: {
-          onClose,
-          children: [],
-        },
+    // Create a new node object
+    const newNode = {
+      // Create a unique ID
+      id: "serve-" + random(100),
+      type: "serve",
+      position: { x: location.getX(), y: location.getY() },
+      draggable: true,
+      height: 100,
+      data: {
+        onClose,
       },
-    ]);
+    };
+    // Update the nodes array by adding the new merge node using the addNodeToNodes function
+    setNodes((nodes: Node[] | undefined) => addNodeToNodes(nodes, newNode));
     location.updateLocation();
   };
 
@@ -355,7 +372,9 @@ const useProcess = (
   const addProcessChild = useCallback(
     (parentId: string) => {
       setNodes((nodes: Array<Node>) => {
-        let parentIndex = nodes?.findIndex((node: Node) => node.id == parentId);
+        const parentIndex: number = nodes?.findIndex(
+          (node: Node) => node.id == parentId
+        );
         const updatedNodes = [...nodes];
         const nextId =
           parentId +
@@ -383,36 +402,37 @@ const useProcess = (
     onClose,
   };
   const addProcess = (process: any = {}) => {
-    const id = "process-" + (nodes?.length + 1);
-    setNodes((nodes: Array<Node>) => [
-      ...nodes,
-      {
-        id: id,
-        type: "process",
-        position: { x: location.getX(), y: location.getY() },
-        draggable: true,
-        height: 100,
-        data: {
-          ...processActions,
-          children: process.inputs?.map((input: any, index: number) => {
-            const childId = `process-${id}-${index}`;
-            return {
-              id: childId,
-              type: input.type,
-              position: { x: 10, y: 1 },
-              draggable: true,
-              height: 100,
-              props: input.props,
-              data: {},
-            };
-          }),
-          ...process,
-        },
+    //Id for process also if nodes undefined
+    const id =
+      nodes === undefined ? "process-1" : "process-" + (nodes?.length + 1);
+    // Create a new node object
+    const newNode = {
+      id: id,
+      type: "process",
+      position: { x: location.getX(), y: location.getY() },
+      draggable: true,
+      height: 100,
+      data: {
+        ...processActions,
+        children: process.inputs?.map((input: any, index: number) => {
+          const childId = `process-${id}-${index}`;
+          return {
+            id: childId,
+            type: input.type,
+            position: { x: 10, y: 1 },
+            draggable: true,
+            height: 100,
+            props: input.props,
+            data: {},
+          };
+        }),
+        ...process,
       },
-    ]);
+    };
+    // Update the nodes array by adding the new merge node using the addNodeToNodes function
+    setNodes((nodes: Node[] | undefined) => addNodeToNodes(nodes, newNode));
     location.updateLocation();
   };
-
   return { addProcess, addProcessChild, processActions };
 };
 
@@ -427,7 +447,6 @@ const useProtocol = () => {
   const [nutritionInfo, setNutritionInfo] = useState<any>([]);
   const [textureMetrics, setTextureMetrics] = useState<any>([]);
   const [isDraft, setIsDraft] = useState<number>(0);
-  /* const [sensory , setSensory] = useState<any>({ }); */
   const [name, setName] = useState("");
   const [project, setProject] = useState<number>();
   const [projects, setProjects] = useState<Array<ProjectType>>([]);
@@ -445,13 +464,13 @@ const useProtocol = () => {
       setCounter,
       location
     );
-   const { addMerge, mergeActions } = useMerge(
-     nodes,
-     setNodes,
-     onChildChange,
-     onClose,
-     location
-   );
+  const { addMerge, mergeActions } = useMerge(
+    nodes,
+    setNodes,
+    onChildChange,
+    onClose,
+    location
+  );
   const { addServe, serveActions } = useServe(
     setNodes,
     random,
@@ -560,7 +579,6 @@ const useProtocol = () => {
     return actions[type] as Function;
   };
   //fetch list of ingredients
-  //Note: i didn't use with next page, i added to ingredients in the server: pagination_class = None
   useEffect(() => {
     http<{ ingredients: ingredientList[] }>(
       addParamsToEndpoint(getEndpoint("all_ingredients"), { params: {} })
@@ -572,8 +590,6 @@ const useProtocol = () => {
         console.error("Error fetching ingredients:", error);
       });
   }, []);
-
-  console.log("Ingredients state:", ingredients);
 
   /**
    * fetch protocol once you get a valid id
@@ -633,9 +649,11 @@ const useProtocol = () => {
       http<ResponseType<ProtocolType>>(
         addParamsToEndpoint(getEndpoint("find_protocol"), { id })
       ).then((response) => {
+console.log("Details of:", JSON.stringify(response.data.payload, null, 2));
+
         setForm(response.data.payload);
-        setNodes(bindActions(response.data.payload.flow.nodes));
-        setEdges(response.data.payload.flow.edges);
+        setNodes(bindActions(response.data.payload.flow?.nodes));
+        setEdges(response.data.payload.flow?.edges);
         setExtra([...response.data.payload.custom_sensory_panels]);
         setTasteIntensity({ ...response.data.payload.taste_intensity });
         setAromaIntensity({ ...response.data.payload.aroma_intensity });
@@ -660,7 +678,7 @@ const useProtocol = () => {
       ).then((response) => {
         setForm(response.data.payload);
         setNodes(bindActions(response.data.payload.flow.nodes));
-        setEdges(response.data.payload.flow.edges);
+        setEdges(response.data.payload.flow?.edges);
         setExtra([...response.data.payload.custom_sensory_panels]);
         setTasteIntensity({ ...response.data.payload.taste_intensity });
         setAromaIntensity({ ...response.data.payload.aroma_intensity });
@@ -805,7 +823,7 @@ const useProtocol = () => {
       const Newprotocole: any = JSON.parse(e.target.result as string);
       console.log("Newprotocole", Newprotocole);
       setForm(Newprotocole);
-      setNodes(bindActions(Newprotocole?.flow.nodes));
+      setNodes(bindActions(Newprotocole?.flow?.nodes));
       setEdges(Newprotocole?.flow?.edges);
       setExtra([...Newprotocole?.custom_sensory_panels]);
       setTasteIntensity({ ...Newprotocole?.taste_intensity });
@@ -953,6 +971,7 @@ const useProtocol = () => {
     onUploda,
     saveAndPredict,
     ingredients,
+    setEdges,
   };
 };
 

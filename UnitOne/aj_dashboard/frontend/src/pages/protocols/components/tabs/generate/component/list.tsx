@@ -52,7 +52,7 @@ const ListSensory: React.FC<any> = ({ items, name, newTitle,orgTitle, sensory,ha
                         let orgValue= orgSensory?.length ? orgSensory?.find((s:any)=> s?.variable == item.name) : {}
                         return(
                             <Grid container spacing={2} m={1}>
-                            <Grid xs={10} className="generate-taste-items" style={{ background: `linear-gradient(90deg, rgba(255, 97, 102, 0.1) ${sValue.value*10}%, #FFF 0%)` }}>
+                            <Grid xs={10} className="generate-taste-items" style={{ background: `linear-gradient(90deg, rgba(255, 97, 102, 0.1) ${sValue?.value*10}%, #FFF 0%)` }}>
                                 <Box className="generate-taste-bg">
                                     <Grid container>
                                         <Grid xs={1} onClick={() => handelDecresing(sValue?.value-.5, item.name,sValue?.id)} className="generate-arrow">
@@ -62,7 +62,7 @@ const ListSensory: React.FC<any> = ({ items, name, newTitle,orgTitle, sensory,ha
                                             {item.name}
                                         </Grid>
                                         <Grid xs={3} className="generate-taste-new-value">
-                                            {sValue.value}
+                                            {sValue?.value}
                                         </Grid>
                                         <Grid xs={1} onClick={() =>handelIncresing(sValue?.value+.5, item.name,sValue?.id)} className="generate-arrow">
                                         <ArrowRightOutlinedIcon />
@@ -71,7 +71,7 @@ const ListSensory: React.FC<any> = ({ items, name, newTitle,orgTitle, sensory,ha
                                 </Box>
                             </Grid>
                             <Grid xs={2}>
-                                {orgValue.value}
+                                {orgValue?.value}
                             </Grid>
                         </Grid>
                         )

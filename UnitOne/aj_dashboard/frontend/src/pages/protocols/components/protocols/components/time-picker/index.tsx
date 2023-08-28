@@ -1,41 +1,47 @@
-import { TimePicker } from "antd";
-import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   InputLabel,
   FormControl,
   InputAdornment,
-  makeStyles,
   OutlinedInput,
-  Theme,
 } from "@mui/material";
 
-const ProtocolTimePicker: React.FC<any> = ({
-  props,
-  onChange,
-  data,
-  value,
-  extra,
-}) => {
+const ProtocolTimePicker: React.FC<any> = ({ onChange, data, extra }) => {
+  // Manage the value displayed in the input field
   const [localValue, setLocalValue] = useState<any>(data.value);
   /**
    * handle the changes of input
    * @param event
    * @author Amr
    */
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setValues(event.target.value);
+
+  // Input Validation
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let inputValue = event.target.value;
+    //prevent "." first
+    if (inputValue[0] === ".") return;
+    // Remove all characters that are not numbers or a single "."
+    const sanitizedValue: string = inputValue.replace(/[^0-9.]/g, "");
+    // Create a regular expression to check for multiple decimal points
+    const hasMultipleDecimalPoints = /[.].*[.]/.test(sanitizedValue);
+    //Check if "-" "=" exist in input field
+    const isValid: boolean =
+      !sanitizedValue.includes("-") && !sanitizedValue.includes("=");
+    // If the input value is valid and doesn't have multiple decimal points, update the input field's value
+    if (isValid && !hasMultipleDecimalPoints) {
+      setLocalValue(sanitizedValue);
+      onChange(sanitizedValue);
+    } else {
+      // If the input is not valid, do nothing
+      setLocalValue(localValue);
+    }
+  };
+
   /**
    * update local values and the node's value as well
    * @param _value
    * @author Amr
    */
-  const setValues = (_value: string) => {
-    setLocalValue(_value);
-    onChange(_value);
-  };
-
-  console.log("extra", extra);
 
   return (
     <FormControl sx={{ m: 1 }} variant="outlined" size="small">
@@ -44,10 +50,16 @@ const ProtocolTimePicker: React.FC<any> = ({
       </InputLabel>
       <OutlinedInput
         className={"number-input"}
-        type="number"
-        // label="Number"
+        type="text"
         value={localValue}
         onChange={handleChange}
+        onKeyPress={(event) => {
+          // Check if the pressed key is not a period (46) and not a digit (48-57)
+          const charCode:number = event.which ? event.which : event.keyCode;
+          if (charCode !== 46 && (charCode < 48 || charCode > 57)) {
+            event.preventDefault(); // Prevent input of non-numeric characters
+          }
+        }}
         name="time"
         id="outlined-adornment-weight"
         endAdornment={
@@ -58,6 +70,7 @@ const ProtocolTimePicker: React.FC<any> = ({
         aria-describedby="outlined-weight-helper-text"
         inputProps={{
           "aria-label": "weight",
+          autocomplete: "off",
         }}
       />
     </FormControl>

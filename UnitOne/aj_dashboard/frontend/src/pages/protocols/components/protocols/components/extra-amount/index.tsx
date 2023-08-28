@@ -107,7 +107,7 @@ const BasicModal: React.FC<any> = ({ open, setOpen, protocol_id, sensory, setSen
                 <Typography id="modal-modal-title" >
                   {sensor.name}
                 </Typography>
-                <Slider track={false} color={sensory[''+sensor.name] < 5 ? "secondary" : "primary"} step={.5} min={0} max={10} onChange={(e, v) => handleSensory(e, v, sensor.name,sValue?.id)} value={sValue?.value } aria-label="Default" valueLabelDisplay="on" />
+                <Slider track={false} color={sensory[''+sensor.name] < 5 ? "secondary" : "primary"} step={.5} min={0} max={10} onChange={(e: Event, v: number | number[]) => handleSensory(e, v, sensor.name,sValue?.id)} value={sValue?.value } aria-label="Default" valueLabelDisplay="on" />
               </Box>
             )
           })}
