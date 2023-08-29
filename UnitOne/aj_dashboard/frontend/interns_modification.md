@@ -9,8 +9,19 @@
    src\pages\protocols\components\tabs\design\component\extraList.tsx
    src\pages\protocols\components\tabs\design\component\list.tsx
 
-3.I changed the autocomplete in Ingredient and Process to startsWith (from contain)
+3. I changed the autocomplete in Ingredient and Process to startsWith (from contain)
 
-4.I added select in Report
+4. I added select in Report
 in src\pages\Reports\partials\charts.tsx, I added to the fetch function useState to hold all projects, and I also added useEffect when a new project is selected
 In src\pages\Reports\index.tsx I called useState and from there it was sent to src\pages\Reports\components\statistics\index.tsx (I did it the way of the programmer who wrote the code...), I created a Select there according to the ID of the project
+
+Old missions
+1. In src\utilities\endpoints.ts I added endPoint "all_ingredients", which receives all ingredients.   
+In src\pages\protocols\partials\hooks.ts I added a fetch list of ingredients.
+In src\pages\protocols\components\ingredient-row\index.tsx I called ingredients and did Autocomplete for the ingredient node, and also added valdtion to the amount (negative number, decimal)
+
+2. In src\pages\protocols\partials\hooks.ts I added to merge mergeActions, that merge can get time
+
+3. In src\pages\protocols\components\protocols\components\time-picker\index.tsx I added validation - minus, a decimal number, so in this way, merge and process has validation 
+
+4. In src\pages\protocols\components\tabs\Add\index.tsx I added to Process Autocomplete
