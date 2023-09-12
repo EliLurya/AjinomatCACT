@@ -229,7 +229,7 @@ const UserClusterByPCAComponent: React.FC = () => {
         <b>CACT</b> (Chemo Aroma Clustering Tool): Enter the SMILE value in the
         form
         <br />
-        <b>Example:</b> CC(C)C1=CC2=C(CC1)C3(CCCC(C3CC2)(C)C=O)
+        <b>Example:</b> CC(C)C1=CC2=C(CC1)C3(CCCC(C3CC2)(C)C=O)C
       </div>
 
       <br />
