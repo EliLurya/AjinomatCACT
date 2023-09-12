@@ -64,7 +64,7 @@ class pca_distribution_view(View):
                 for i in indices
             ]
         # Convert data to JSON format
-        return JsonResponse(odor_data)
+        return JsonResponse(odor_data, safe=False)
 
 
 class DescriptorVarianceView(View):

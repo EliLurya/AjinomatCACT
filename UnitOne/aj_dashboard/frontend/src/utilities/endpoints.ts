@@ -133,4 +133,24 @@ export default {
     url: "ingredients/",
     method: HttpMethodTypes.GET,
   },
+  smell: {
+    url: "smell/",
+    method: HttpMethodTypes.GET,
+  },
+  pca_distribution: {
+    url: "smell/pca-distribution/",
+    method: HttpMethodTypes.GET,
+  },
+  descriptor_variance: {
+    url: "smell/descriptor-variance/",
+    method: HttpMethodTypes.GET,
+  },
+  cluster_by_pca: {
+    url: "smell/cluster-by-pca/",
+    method: HttpMethodTypes.GET,
+  },
+  submit: {
+    url: "smell/submit/",
+    method: HttpMethodTypes.POST,
+  },
 };

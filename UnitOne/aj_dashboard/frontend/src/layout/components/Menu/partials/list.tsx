@@ -52,12 +52,12 @@ const items: MenuItem[] = [
         icon: SetupIcon,
         route: getRoute('all-setups')
     },
-    {
-        label: 'Other',
-        key: 3,
-        icon: OtherIcon,
-        route: getRoute('others')
-    }
+    // {
+    //     label: 'Other',
+    //     key: 3,
+    //     icon: OtherIcon,
+    //     route: getRoute('others')
+    // }
 ];
 /**
  * return all items of the menu
