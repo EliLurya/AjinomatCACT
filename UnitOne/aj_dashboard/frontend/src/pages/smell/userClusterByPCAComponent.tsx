@@ -5,6 +5,7 @@ import HighchartsReact from "highcharts-react-official";
 import SubmitClusterByPCAComponent from "./submitClusterByPCAComponent";
 import { useLocation } from "react-router-dom";
 import MenuSmell from "./menuSmell";
+import { Segment } from "@mui/icons-material";
 
 const UserClusterByPCAComponent: React.FC = () => {
   const [chartOptions, setChartOptions] = useState<any>({});
@@ -42,15 +43,10 @@ const UserClusterByPCAComponent: React.FC = () => {
     }
   }, [data]);
 
-  useEffect(() => {
-    console.log(allSegment7);
-
-    // Call handleDataLoaded with both segments_json and accumulated segment_7
-    handleDataLoaded(JSON.parse(data?.segments_json), allSegment7);
-  }, [allSegment7, data]);
-
+  
+let options: any;
   const handleDataLoaded = (data: any, segment_7: any) => {
-    const options = {
+     options = {
       chart: {
         type: "scatter",
         zoomType: "xy",
@@ -182,9 +178,16 @@ const UserClusterByPCAComponent: React.FC = () => {
         },
       },
     };
-    setChartOptions(options);
   };
+  useEffect(() => {
+    setChartOptions(options);
+  }, [data, allSegment7, options]);
+  
+ 
 
+    // Call handleDataLoaded with both segments_json and accumulated segment_7
+    handleDataLoaded(JSON.parse(data?.segments_json), allSegment7);
+ 
   return (
     <div className="center">
       {/* Menu */}
@@ -234,7 +237,7 @@ const UserClusterByPCAComponent: React.FC = () => {
 
       <br />
       {/* Input field and button */}
-      <SubmitClusterByPCAComponent />
+      <SubmitClusterByPCAComponent setSegment7={Segment}/>
       <br />
       <div className="row">
         The use of PCA K-Means clustering can further refine our analysis of
