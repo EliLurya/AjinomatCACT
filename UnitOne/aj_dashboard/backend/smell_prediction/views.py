@@ -10,29 +10,7 @@ from mordred import Calculator, descriptors, get_descriptors_from_module, get_de
 from django.http import JsonResponse
 
 
-class IndexView(View):
-    template_name = 'index.html'
-
-    def get(self, request):
-        # Retrieve all compounds from the database
-        # compounds = Compound.objects.all()
-
-        # # Perform PCA and get labels
-        # PC, labels, _, _ = perform_pca(compounds)
-
-        # context = {
-        #     'df_new': compounds,
-        #     'colors': {0: 'lightgreen', 1: 'red', 2: 'cyan', 3: 'fuchsia', 4: 'black', 5: 'gold'},
-        #     'PC': PC,
-        #     'labels': labels,
-        # }
-
-        return render(request, self.template_name)
-
 # Define a view to display PCA distribution
-
-# pca_distribution_view
-
 
 class pca_distribution_view(View):
 
@@ -96,9 +74,9 @@ class ClusterByPCAView(View):
     def get(self, request):
         # Retrieve all compounds from the database
         compounds = Compound.objects.all()
-        _, labels, _, _ = perform_pca(compounds)       
+        _, labels, _, _ = perform_pca(compounds)
         segments = [[] for _ in range(6)]  # Initialize empty segments
-        # Labels corresponding to segments        
+        # Labels corresponding to segments
         for i, labels in enumerate(labels):
             if labels >= 0 and labels < 6:
                 segments[labels].append({
@@ -121,7 +99,7 @@ class SubmitView(View):
         # Initialize empty segments
         segments = [[] for _ in range(6)]
         segment_7 = []  # Initialize segment_7 for inputs
-       
+
         for i, label_number in enumerate(labels):
             # Check if the label_number falls within the range [0, 6)
             # This ensures that labels outside this range are not processed
@@ -133,11 +111,12 @@ class SubmitView(View):
                     'name': compounds[i].name,
                     'odor': compounds[i].odor_class,
                 })
-        text = request.POST.get("text")        
+        text = request.POST.get("text")
         if text:
             try:
                 mol = Chem.MolFromSmiles(text)
                 iupac_name = pcp.get_compounds(text, 'smiles')[0].iupac_name
+                print(iupac_name)
                 if not iupac_name:
                     raise Exception("Failed to obtain IUPAC name")
 
@@ -149,23 +128,23 @@ class SubmitView(View):
                     'odor': 'Undefine',
                 })
 
-                return JsonResponse( {
+                return JsonResponse({
                     'message': 'You can add another SMILES input',
                     'segments_json': json.dumps(segments),
                     # Pass segment_7 with the new point
                     'segment_7': json.dumps(segment_7),
-                },safe=False)
+                }, safe=False)
             except Exception as e:
 
-                return JsonResponse( {
+                return JsonResponse({
                     'message': f'Error in property calculation: {str(e)}',
                     'segments_json': json.dumps(segments),
                     'segment_7': json.dumps(segment_7),
-                },safe=False)
+                }, safe=False)
         else:
             print(segment_7)
-            return JsonResponse( self.template_name, {
+            return JsonResponse(self.template_name, {
                 'message': 'Invalid SMILES input',
                 'segments_json': json.dumps(segments),
                 'segment_7': json.dumps(segment_7),
-            },safe=False)
+            }, safe=False)
