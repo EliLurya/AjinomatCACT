@@ -12,6 +12,7 @@ const SubmitClusterByPCAComponent: React.FC<any> = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     //Chek if the input is empty
     if (smileValue.trim() === "") {
       setErrorMessage("This field is required");
@@ -21,8 +22,9 @@ const SubmitClusterByPCAComponent: React.FC<any> = () => {
     }
     // Create a FormData object to hold the form fields
     const formData = new FormData();
-    formData.append("text", smileValue);
-    // Send the data to the server
+    //Remove all the spaces in the smileValue and send the data to the server
+    formData.append("text", smileValue.replace(/\s+/g, ""));
+
     try {
       const response = await fetch(
         process.env.REACT_APP_SERVER_URL + "/api/smell/submit/" ||
