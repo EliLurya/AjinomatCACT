@@ -1,9 +1,8 @@
 from django.urls import path
 
-from .views import IndexView, pca_distribution_view, DescriptorVarianceView, ClusterByPCAView, SubmitView
+from .views import  pca_distribution_view, DescriptorVarianceView, ClusterByPCAView, SubmitView
 app_name = 'smell_prediction'
 urlpatterns = [
-    path('', IndexView.as_view(), name='index'),
     path('pca-distribution/', pca_distribution_view.as_view(),
          name='pca-distribution'),
     path('descriptor-variance/', DescriptorVarianceView.as_view(),
